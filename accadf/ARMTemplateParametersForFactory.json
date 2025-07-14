@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "accadf"
+		},
+		"adls_linked_serive_accountKey": {
+			"value": ""
+		},
+		"adls_linked_serive_properties_typeProperties_url": {
+			"value": "https://adfstorageaccountv.dfs.core.windows.net/"
+		},
+		"git_linked_service_properties_typeProperties_url": {
+			"value": "https://raw.githubusercontent.com/"
+		},
+		"link_git_properties_typeProperties_url": {
+			"value": "https://raw.githubusercontent.com"
+		}
+	}
+}
