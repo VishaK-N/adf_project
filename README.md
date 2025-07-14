@@ -15,7 +15,7 @@ Thus, this project helps in understanding the data and helps the business stakeh
 
 These data helps us to analyse the business even more in wide view and take better action for the good cash flow and reduce the collection period.
 
-action could be done:-
+Action could be done:-
 - **regular follow-ups**
 - **automated remainders**
 
