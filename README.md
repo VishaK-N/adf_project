@@ -52,11 +52,14 @@ Create the dataset whenever needed while creating a pipeline
 Creating a pipeline with copy activity to get the data from the github and loading into the staging container.
 **Note:** create and use the appropriate source and sink dataset here
 <img src="ScreenShots/pipeline_git_ss.png" alt="pipeline_git" width="500"/>
+<img src="ScreenShots/staging_container_ss.png" alt="stage_container" width="500"/>
 
 ### Pipeline required Files
-* Create a pipeline with metadata activity from which getting the childitems of the each file
-* Each file will be scan by the ForEach Activity based on the childItems
+* Create a pipeline with metadata activity from which getting the childitems of the each file 
+* Each file will be scan by the ForEach Activity based on the childItems which is stored in the raw container
   **@activity('GetMetadata').output.childItems**
+<img src="ScreenShots/raw_container_ss.png" alt="required_files" width="500"/>
+
 * Using the If Condition Activity pass a condition on each file, if it satisfy copy and load into the staging layer along with the git source file
   **@startswith(item().name,'Fact')**
 <img src="ScreenShots/required_files_pipeline_ss.png" alt="required_files" width="500"/>
@@ -89,6 +92,7 @@ Once everything has setup
    - once the pipeline triggered, pipeline Git get executed and load the file from the git to Stage Container.
    - After that pipeline required files will do the work and load the respective files based on the condition.
    - Then the data Flow starts, do the tranformation and load the data into the final container.
+<img src="ScreenShots/raw_container_ss.png" alt="required_files" width="500"/>
    - Finally, Delete Activity will remove the files from the Staging Container after the Data Flow gets done.
 
 3. **Monitor Pipeline Execution**
