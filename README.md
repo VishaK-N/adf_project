@@ -29,45 +29,54 @@ action could be done:-
 ## 🚀 Getting Started
 steps to get started with the project
 
-### 📁 Create Required Containers in Azure Data Lake
+### Step 1: 📁 Create Required Containers in Azure Data Lake
 create the storage account with namespace heirarchy checkbox ticked to create the Azure Data lake or Azure blob stoarge can also be used, In the ADLS create the containers such as 
 
 - `staging` – for raw source files 
 - `staging` – here files will be coming from raw container with some condition and also from the git source 
-- `final` – files from the staging will be joined, trasmformed and loaded in the final container 
+- `final` – files from the staging will be joined, trasmformed and loaded in the final container
+<img src="ScreenShots/stoarge_account_ss.png" alt="storage_account" width="500"/>
 
-### 🔗 Create Linked Services in ADF
+### Step 2: 🔗 Create Linked Services in ADF
 - Azure Data Lake Storage – to connect with your blob containers
 - GitHub – to get data from the gitHub using http source
 
-### 🛠 Create Datasets
-create the dataset whenever needed while creating a pipeline
+### Step 3: 🛠 Create Datasets
+create the dataset whenever needed while creating a pipeline,
 dataset - file which is used for processing 
+<img src="ScreenShots/dataflow_source_ss.png" alt="dataflow_source" width="500"/>
 
-## 🛠 Create Pipelines:
+## 🛠 Step 4: Create Pipelines:
 
 ### Pipeline Git
-creating a pipeline with copy activity to get the data from the github and loading into the staging container
+creating a pipeline with copy activity to get the data from the github and loading into the staging container.
+**Note:** create and use the appropriate source and sink dataset here
+<img src="ScreenShots/pipeline_git_ss.png" alt="pipeline_git" width="500"/>
 
 ### Pipeline required Files
 * Create a pipeline with metadata activity from which getting the childitems of the each file
-* Each file will be scan by using the ForEach Activity based on the childItems
+* Each file will be scan by the ForEach Activity based on the childItems
   **@activity('GetMetadata').output.childItems**
 * Using the If Condition Activity pass a condition on each file, if it satisfy copy and load into the staging layer along with the git source file
   **@startswith(item().name,'Fact')**
+<img src="ScreenShots/required_files_pipeline_ss.png" alt="required_files" width="500"/>
 
-### 🔄 Build Mapping Data Flows
+**Note:** create and use the appropriate dataset here, also define the parameter in source and sink file , Also, define parameters in both the source and sink datasets to dynamically handle file names, using the item().name from the  **@activity('GetMetadata').output.childItems**
+
+### Step 5: 🔄 Build Mapping Data Flows
 - extracting all the necessary files from the stage container
 - aggregate operation on fact_adjustment, fact_payments
 - joining the fact_claims with the fact_adjustment, fact_payments and dim_payers
 - using the derived column operation to get the receivable amount from the patient or insurers
   **receivable_amount = total_charge + total_adjustment - total_paid**
+<img src="ScreenShots/dataflow_ss.png" alt="dataflow" width="500"/>
 
-### Delete Activity
+### Step 6: Delete Activity
 After processing Delete the data from the staging layer, so everytime the data get processed as new.
 
-## Master pipeline using Executive Pipeline activity 
+## Step 7: Master pipeline using Executive Pipeline activity 
 - creating a pipeline combining both pipelines, dataflow and delete activity altogether as master pipeline.
+<img src="ScreenShots/master_pipeline_ss.png" alt="master_pipeline" width="500"/>
 
 ## ▶️ Usage
 
@@ -75,11 +84,19 @@ Once everything has setup
 
 1.**Triggering the pipeline**
    - Running the pipeline manually or run it with any of the trigger
+     
+2. **Master Pipeline flow**
+   - once the pipeline triggered, pipeline Git get executed and load the file from the git to Stage Container.
+   - After that pipeline required files will do the work and load the respective files based on the condition.
+   - Then the data Flow starts, do the tranformation and load the data into the final container.
+   - Finally, Delete Activity will remove the files from the Staging Container after the Data Flow gets done.
 
-2. **Monitor Pipeline Execution**
+3. **Monitor Pipeline Execution**
    - Use the **Monitor** tab in ADF to track runs and debug any failures.
+<img src="ScreenShots/pipeline_runs_ss.png" alt="run1" width="500"/>
+<img src="ScreenShots/pipeline_runs2_ss.png" alt="run1" width="500"/>
 
-3. **Verify Output**
+4. **Verify Output**
    - Final transformed data will be available in the `final` container in Azure Data Lake.
    - Use this data for reporting, analysis, or dashboarding.
 
