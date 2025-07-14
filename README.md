@@ -8,16 +8,16 @@ In the Healthcare, **Account Receivable** (amount owed by patients or insurance 
 
 Thus, this project helps in understanding the data and helps the business stakeholders to take actions for the better cash flow, such as 
 
-- total bill
-- adjustment amount
-- amount paid
-- Remaining amount in the AR.
+- Total bill
+- Adjustment amount
+- Amount paid
+- Remaining amount in the AR
 
 These data helps us to analyse the business even more in wide view and take better action for the good cash flow and reduce the collection period.
 
 action could be done:-
 - **regular follow-ups**
-- **automatedremainders**
+- **automated remainders**
 
 ## 🧰 Tech Stack
 
@@ -27,10 +27,10 @@ action could be done:-
 - **GitHub** – Integrated with ADF for version control, collaboration, and as a source location
 
 ## 🚀 Getting Started
-steps to get started with the project
+Steps to get started with the project
 
 ### Step 1: 📁 Create Required Containers in Azure Data Lake
-create the storage account with namespace heirarchy checkbox ticked to create the Azure Data lake or Azure blob stoarge can also be used, In the ADLS create the containers such as 
+Create the storage account with namespace heirarchy checkbox ticked to create the Azure Data lake or Azure blob stoarge can also be used, In the ADLS create the containers such as 
 
 - `staging` – for raw source files 
 - `staging` – here files will be coming from raw container with some condition and also from the git source 
@@ -42,14 +42,14 @@ create the storage account with namespace heirarchy checkbox ticked to create th
 - GitHub – to get data from the gitHub using http source
 
 ### Step 3: 🛠 Create Datasets
-create the dataset whenever needed while creating a pipeline,
-dataset - file which is used for processing 
+Create the dataset whenever needed while creating a pipeline
+- dataset - file which is used for processing 
 <img src="ScreenShots/dataflow_source_ss.png" alt="dataflow_source" width="500"/>
 
 ## 🛠 Step 4: Create Pipelines:
 
 ### Pipeline Git
-creating a pipeline with copy activity to get the data from the github and loading into the staging container.
+Creating a pipeline with copy activity to get the data from the github and loading into the staging container.
 **Note:** create and use the appropriate source and sink dataset here
 <img src="ScreenShots/pipeline_git_ss.png" alt="pipeline_git" width="500"/>
 
@@ -64,18 +64,18 @@ creating a pipeline with copy activity to get the data from the github and loadi
 **Note:** create and use the appropriate dataset here, also define the parameter in source and sink file , Also, define parameters in both the source and sink datasets to dynamically handle file names, using the item().name from the  **@activity('GetMetadata').output.childItems**
 
 ### Step 5: 🔄 Build Mapping Data Flows
-- extracting all the necessary files from the stage container
-- aggregate operation on fact_adjustment, fact_payments
-- joining the fact_claims with the fact_adjustment, fact_payments and dim_payers
-- using the derived column operation to get the receivable amount from the patient or insurers
-  **receivable_amount = total_charge + total_adjustment - total_paid**
+- Extracting all the necessary files from the stage container
+- Aggregate operation on fact_adjustment, fact_payments
+- Joining the fact_claims with the fact_adjustment, fact_payments and dim_payers
+- Using the derived column operation to get the receivable amount from the patient or insurers.
+- **receivable_amount = total_charge + total_adjustment - total_paid**
 <img src="ScreenShots/dataflow_ss.png" alt="dataflow" width="500"/>
 
 ### Step 6: Delete Activity
 After processing Delete the data from the staging layer, so everytime the data get processed as new.
 
 ## Step 7: Master pipeline using Executive Pipeline activity 
-- creating a pipeline combining both pipelines, dataflow and delete activity altogether as master pipeline.
+- Creating a pipeline combining both pipelines, dataflow and delete activity altogether as master pipeline.
 <img src="ScreenShots/master_pipeline_ss.png" alt="master_pipeline" width="500"/>
 
 ## ▶️ Usage
