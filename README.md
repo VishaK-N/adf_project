@@ -83,7 +83,7 @@ Once everything has setup
    - Final transformed data will be available in the `final` container in Azure Data Lake.
    - Use this data for reporting, analysis, or dashboarding.
 
-<img src="ScreenShots/final_table_preview_ss.png" alt="final_output" width="300"/>
+<img src="ScreenShots/final_table_preview_ss.png" alt="final_output" width="400"/>
 
 
 
