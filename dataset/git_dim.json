@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "HttpServerLocation",
-				"relativeUrl": "VishaK-N/adf_project/refs/heads/main/dim_payers.csv"
+				"relativeUrl": "VishaK-N/adf_project/refs/heads/main/git_source_folder/dim_payers.csv"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
