@@ -1,0 +1,25 @@
+{
+	"name": "dataflow_source_payments",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adls_linked_serive",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "fact_payments.csv",
+				"folderPath": "csvfiles",
+				"fileSystem": "staging"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

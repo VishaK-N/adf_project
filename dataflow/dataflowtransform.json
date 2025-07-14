@@ -1,0 +1,138 @@
+{
+	"name": "dataflowtransform",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dataflow_claims_source",
+						"type": "DatasetReference"
+					},
+					"name": "fclaims"
+				},
+				{
+					"dataset": {
+						"referenceName": "dataflow_source_adjustments",
+						"type": "DatasetReference"
+					},
+					"name": "fadjustments"
+				},
+				{
+					"dataset": {
+						"referenceName": "dataflow_source_payments",
+						"type": "DatasetReference"
+					},
+					"name": "fpayments"
+				},
+				{
+					"dataset": {
+						"referenceName": "dataflow_source_payers",
+						"type": "DatasetReference"
+					},
+					"name": "dpayers"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "final_data",
+						"type": "DatasetReference"
+					},
+					"name": "sinkFinalAR",
+					"description": "loading the data related to accounts receivable to the final layer"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregateOperation1"
+				},
+				{
+					"name": "aggregateOperation2"
+				},
+				{
+					"name": "claimsJadjustments"
+				},
+				{
+					"name": "claimsJpayments"
+				},
+				{
+					"name": "claimsJpayers"
+				},
+				{
+					"name": "DerviedColumns",
+					"description": "creating a new column"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          claim_id as string,",
+				"          patient_id as string,",
+				"          payer_id as string,",
+				"          billing_date as date,",
+				"          total_charge as double,",
+				"          status as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> fclaims",
+				"source(output(",
+				"          adjustment_id as string,",
+				"          claim_id as string,",
+				"          adjustment_amount as double,",
+				"          adjustment_reason as string,",
+				"          adjustment_date as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> fadjustments",
+				"source(output(",
+				"          payment_id as string,",
+				"          claim_id as string,",
+				"          paid_amount as double,",
+				"          payment_date as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> fpayments",
+				"source(output(",
+				"          payer_id as string,",
+				"          payer_name as string,",
+				"          payer_type as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> dpayers",
+				"fadjustments aggregate(groupBy(claim_id),",
+				"     total_adjustment = round(sum(adjustment_amount),2),",
+				"          last_adjustment_date = max(adjustment_date)) ~> aggregateOperation1",
+				"fpayments aggregate(groupBy(claim_id),",
+				"     total_paid = round(sum(paid_amount), 2),",
+				"          last_payment_date = max(payment_date)) ~> aggregateOperation2",
+				"fclaims, aggregateOperation1 join(fclaims@claim_id == aggregateOperation1@claim_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> claimsJadjustments",
+				"claimsJadjustments, aggregateOperation2 join(fclaims@claim_id == aggregateOperation2@claim_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> claimsJpayments",
+				"claimsJpayments, dpayers join(fclaims@payer_id == dpayers@payer_id,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> claimsJpayers",
+				"claimsJpayers derive(receivable_amount = round(coalesce(total_charge, 0) + coalesce(total_adjustment, 0) - coalesce(total_paid, 0), 2)) ~> DerviedColumns",
+				"DerviedColumns sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sinkFinalAR"
+			]
+		}
+	}
+}

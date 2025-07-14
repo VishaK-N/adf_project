@@ -1,0 +1,92 @@
+{
+	"name": "data_transform",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dataflow_psource",
+						"type": "DatasetReference"
+					},
+					"name": "patientsource"
+				},
+				{
+					"dataset": {
+						"referenceName": "dataflow_dsource",
+						"type": "DatasetReference"
+					},
+					"name": "diagnosissource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "final_data",
+						"type": "DatasetReference"
+					},
+					"name": "sinkdata"
+				}
+			],
+			"transformations": [
+				{
+					"name": "JoinOperation"
+				},
+				{
+					"name": "requiredColumns",
+					"description": "selecting only the required columns"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          patient_id as string,",
+				"          name as string,",
+				"          age as short,",
+				"          gender as string,",
+				"          address as string,",
+				"          contact_number as string,",
+				"          admission_date as date,",
+				"          diagnosis_code as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> patientsource",
+				"source(output(",
+				"          diagnosis_code as string,",
+				"          diagnosis_description as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> diagnosissource",
+				"patientsource, diagnosissource join(patientsource@diagnosis_code == diagnosissource@diagnosis_code,",
+				"     joinType:'outer',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     partitionBy('hash', 1),",
+				"     broadcast: 'auto')~> JoinOperation",
+				"JoinOperation select(mapColumn(",
+				"          patient_id,",
+				"          name,",
+				"          age,",
+				"          gender,",
+				"          address,",
+				"          contact_number,",
+				"          admission_date,",
+				"          diagnosis_code = patientsource@diagnosis_code,",
+				"          diagnosis_code = diagnosissource@diagnosis_code,",
+				"          diagnosis_description",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> requiredColumns",
+				"requiredColumns sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sinkdata"
+			]
+		}
+	}
+}

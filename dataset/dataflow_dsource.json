@@ -1,0 +1,25 @@
+{
+	"name": "dataflow_dsource",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adls_linked_serive",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "diagnosis_mapping.csv",
+				"folderPath": "csvfiles",
+				"fileSystem": "silver"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
