@@ -64,7 +64,7 @@ Creating a pipeline with copy activity to get the data from the github and loadi
   **@startswith(item().name,'Fact')**
 <img src="ScreenShots/required_files_pipeline_ss.png" alt="required_files" width="500"/>
 
-**Note:** create and use the appropriate dataset here, also define the parameter in source and sink file , Also, define parameters in both the source and sink datasets to dynamically handle file names, using the item().name from the  **@activity('GetMetadata').output.childItems**
+- **Note:** create and use the appropriate dataset here, also define the parameter in source and sink file , Also, define parameters in both the source and sink datasets to dynamically handle file names, using the item().name from the  **@activity('GetMetadata').output.childItems**
 
 ### Step 5: 🔄 Build Mapping Data Flows
 - Extracting all the necessary files from the stage container
