@@ -50,7 +50,7 @@ Create the dataset whenever needed while creating a pipeline
 
 ### Pipeline Git
 Creating a pipeline with copy activity to get the data from the github and loading into the staging container.
-**Note:** create and use the appropriate source and sink dataset here
+- **Note:** create and use the appropriate source and sink dataset here
 <img src="ScreenShots/pipeline_git_ss.png" alt="pipeline_git" width="500"/>
 <img src="ScreenShots/staging_container_ss.png" alt="stage_container" width="500"/>
 
