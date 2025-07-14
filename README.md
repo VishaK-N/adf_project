@@ -1,6 +1,6 @@
 # Healthcare AR management using Azure Data Factory
 
-This Azure Data Factory (ADF) project focuses on processing and transforming data from the healthcare Accounts Receivable (AR) domain to support better business evaluation and decision-making.
+This Azure Data Factory (ADF) project focuses on processing and transforming data from the Healthcare Accounts Receivable (AR) domain to support better business evaluation and decision-making.
 
 ## Project Description:
 
