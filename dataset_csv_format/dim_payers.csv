@@ -1,0 +1,5 @@
+payer_id,payer_name,payer_type
+PYR01,Blue Cross,Commercial
+PYR02,Medicare,Government
+PYR03,Aetna,Commercial
+PYR04,Self Pay,Self
